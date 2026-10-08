@@ -1,0 +1,11 @@
+[project]
+name = "internmatch-backend"
+version = "2.0.0"
+requires-python = ">=3.12,<3.13"
+dynamic = ["dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["backend/requirements.txt"]}
+
+[tool.setuptools.packages.find]
+include = ["backend*"]
