@@ -5,13 +5,12 @@ import json
 import os
 import re
 import secrets
-import sqlite3
 import time
 import uuid
 from typing import Annotated
 from fastapi import APIRouter, Depends, Header, HTTPException, Request, Response
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, field_validator
-from .database import connection
+from .database import connection, INTEGRITY_ERRORS
 from .models import Profile
 
 router = APIRouter(prefix="/api")
@@ -110,7 +109,7 @@ def register(payload: Register, request: Request, response: Response):
         with connection() as db:
             db.execute("INSERT INTO users(id,email,name,password_hash,role,created_at) VALUES (?,?,?,?, 'student', ?)", (uid, payload.email, payload.name, password_hash(payload.password), int(time.time())))
             user = dict(db.execute("SELECT * FROM users WHERE id=?", (uid,)).fetchone())
-    except sqlite3.IntegrityError:
+    except INTEGRITY_ERRORS:
         raise HTTPException(409, "An account with this email already exists")
     return create_session(user, response, request)
 
@@ -160,6 +159,6 @@ def update_admin_account(payload: AdminAccountUpdate, request: Request, response
             # Revoke all existing sessions after changing account credentials.
             db.execute("DELETE FROM sessions WHERE user_id=?", (session["id"],))
             updated = dict(db.execute("SELECT * FROM users WHERE id=?", (session["id"],)).fetchone())
-    except sqlite3.IntegrityError:
+    except INTEGRITY_ERRORS:
         raise HTTPException(409, "An account with this email already exists")
     return create_session(updated, response, request)

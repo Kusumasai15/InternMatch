@@ -22,7 +22,7 @@ export type GraphAnalytics = {
   paths: Array<{ internshipId: string; path: string[] }>;
 };
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+import { API_URL } from "./api";
 
 export async function fetchGraphAnalytics(profile: Profile, internships: Internship[], signal?: AbortSignal): Promise<GraphAnalytics> {
   const response = await fetch(`${API_URL}/api/analytics`, {

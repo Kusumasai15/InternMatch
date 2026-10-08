@@ -118,7 +118,7 @@ Catalog changes are visible to students. The catalog refreshes on window focus a
 
 | Data | Storage |
 |---|---|
-| Accounts, profiles, sessions, internships | Backend SQLite database |
+| Accounts, profiles, sessions, internships | Backend database (SQLite locally; PostgreSQL when DATABASE_URL is set) |
 | Profile cache | Account-specific localStorage |
 | Saved internships and application tracker | Account-specific localStorage in this browser |
 | Theme preferences | localStorage |
@@ -215,4 +215,4 @@ Further reading: [architecture](docs/ARCHITECTURE.md), [demonstration steps](DEM
 
 Serve frontend and API under the same HTTPS site, for example by proxying `/api` to FastAPI. Configure `VITE_API_URL` and `ALLOWED_ORIGINS`, set `COOKIE_SECURE=true`, and keep SQLite on a persistent writable volume. Serve the production frontend build and run FastAPI without `--reload`. Local environment files, databases, and generated caches are excluded from Git.
 
-For Vercel setup, see [deployment instructions](docs/DEPLOYMENT.md). The frontend configuration is included; a persistent FastAPI host and API proxy URL are still required.
+For Vercel setup, see [deployment instructions](docs/DEPLOYMENT.md). Vercel serves both the frontend and FastAPI API; set DATABASE_URL to a hosted PostgreSQL connection string. Local development still defaults to SQLite.

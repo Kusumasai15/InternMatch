@@ -3,6 +3,8 @@
 import json
 import os
 import sqlite3
+import psycopg
+from psycopg.rows import dict_row
 from contextlib import contextmanager
 from pathlib import Path
 from dotenv import load_dotenv
@@ -10,11 +12,38 @@ from dotenv import load_dotenv
 ROOT = Path(__file__).resolve().parents[1]
 load_dotenv(ROOT / ".env")
 
+INTEGRITY_ERRORS = (sqlite3.IntegrityError, psycopg.IntegrityError)
+
+class PostgresConnection:
+    """Keep the small shared SQL interface used by the SQLite implementation."""
+    def __init__(self, db):
+        self.db = db
+
+    def execute(self, sql, params=()):
+        if sql == "BEGIN IMMEDIATE":
+            sql = "SELECT 1"  # psycopg already starts a transaction.
+        sql = sql.replace("?", "%s").replace("ORDER BY created_at DESC, rowid", "ORDER BY created_at DESC, id")
+        return self.db.execute(sql, params)
+
+    def executescript(self, script):
+        for statement in script.split(";"):
+            if statement.strip():
+                self.db.execute(statement)
+
 def database_path():
     return Path(os.environ.get("APP_DATABASE_PATH", ROOT / "data" / "app.sqlite3")).resolve()
 
 @contextmanager
 def connection():
+    url = os.getenv("DATABASE_URL", "").strip()
+    if url:
+        if not url.startswith(("postgres://", "postgresql://")):
+            raise ValueError("DATABASE_URL must be a PostgreSQL connection URL")
+        with psycopg.connect(url, row_factory=dict_row, connect_timeout=10) as db:
+            yield PostgresConnection(db)
+        return
+    if os.getenv("VERCEL"):
+        raise RuntimeError("Set DATABASE_URL before deploying to Vercel")
     target = database_path()
     target.parent.mkdir(parents=True, exist_ok=True)
     db = sqlite3.connect(target, timeout=15)
@@ -31,6 +60,8 @@ def connection():
 
 def initialize():
     with connection() as db:
+        if os.getenv("DATABASE_URL"):
+            db.execute("SELECT pg_advisory_xact_lock(25034)")
         db.executescript("""
         CREATE TABLE IF NOT EXISTS users (
             id TEXT PRIMARY KEY, email TEXT UNIQUE NOT NULL,
@@ -50,5 +81,5 @@ def initialize():
         """)
         if not db.execute("SELECT 1 FROM metadata WHERE key='catalog_seeded'").fetchone():
             for item in json.loads((ROOT.parent / "data" / "internships.json").read_text(encoding="utf-8")):
-                db.execute("INSERT OR IGNORE INTO internships VALUES (?, ?, 0)", (item["id"], json.dumps(item)))
+                db.execute("INSERT INTO internships VALUES (?, ?, 0) ON CONFLICT(id) DO NOTHING", (item["id"], json.dumps(item)))
             db.execute("INSERT INTO metadata VALUES ('catalog_seeded', '1')")

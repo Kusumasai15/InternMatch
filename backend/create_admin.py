@@ -1,9 +1,8 @@
 """Run from the project root: python -m backend.create_admin"""
 import getpass
-import sqlite3
 import time
 import uuid
-from .app.database import initialize, connection
+from .app.database import initialize, connection, INTEGRITY_ERRORS
 from .app.accounts import Register, password_hash
 
 def main():
@@ -17,7 +16,7 @@ def main():
     try:
         with connection() as db:
             db.execute("INSERT INTO users(id,email,name,password_hash,role,created_at) VALUES (?,?,?,?, 'admin', ?)", (uuid.uuid4().hex, account.email, account.name, password_hash(account.password), int(time.time())))
-    except sqlite3.IntegrityError:
+    except INTEGRITY_ERRORS:
         raise SystemExit("This email already has an account. No role was changed.")
     print("Admin account created. Sign in through the app.")
 
