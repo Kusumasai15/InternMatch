@@ -1,0 +1,15 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.DS_Store
+
+# Account platform data and local settings
+.env
+.env.local
+backend/.env
+.venv/
+__pycache__/
+.pytest_cache/
+.test-deps/
+*.sqlite3
+*.sqlite3-*

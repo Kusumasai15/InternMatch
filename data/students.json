@@ -1,0 +1,54 @@
+[
+  {
+    "name": "Aanya Iyer",
+    "branch": "Computer Science & Engineering",
+    "cgpa": 8.6,
+    "location": "Bengaluru",
+    "skills": [
+      "React",
+      "TypeScript",
+      "Python",
+      "SQL",
+      "Figma"
+    ],
+    "interests": [
+      "Developer tools",
+      "Data for good",
+      "Product design"
+    ]
+  },
+  {
+    "name": "Rohan Mehta",
+    "branch": "Electronics & Communication",
+    "cgpa": 7.4,
+    "location": "Pune",
+    "skills": [
+      "Python",
+      "Linux",
+      "Networking",
+      "Embedded C"
+    ],
+    "interests": [
+      "Infrastructure",
+      "IoT",
+      "Cybersecurity"
+    ]
+  },
+  {
+    "name": "Kavya Rao",
+    "branch": "Artificial Intelligence & Data Science",
+    "cgpa": 8.9,
+    "location": "Hyderabad",
+    "skills": [
+      "Python",
+      "SQL",
+      "Machine Learning",
+      "Statistics"
+    ],
+    "interests": [
+      "Artificial intelligence",
+      "Data for good",
+      "Research"
+    ]
+  }
+]

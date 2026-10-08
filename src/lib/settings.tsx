@@ -1,0 +1,7 @@
+import {createContext,useContext,useEffect,useState,type ReactNode} from "react";
+import {dictionary,type Language,type Label} from "../i18n";
+type Settings={language:Language;theme:"light"|"dark";setLanguage:(l:Language)=>void;toggleTheme:()=>void;t:(key:Label)=>string};
+const Context=createContext<Settings|null>(null);
+function read(){try{const value=JSON.parse(localStorage.getItem("sihmatch-preferences-v1")??"{}");return {language:(["en","hi","te"].includes(value?.language)?value.language:"en") as Language,theme:(value?.theme==="dark"?"dark":"light") as "light"|"dark"};}catch{return {language:"en" as Language,theme:"light" as const};}}
+export function SettingsProvider({children}:{children:ReactNode}){const [settings,setSettings]=useState(read);useEffect(()=>{document.documentElement.dataset.theme=settings.theme;document.documentElement.lang=settings.language;try{localStorage.setItem("sihmatch-preferences-v1",JSON.stringify(settings));}catch{/* Preferences still work for this session. */}},[settings]);return <Context.Provider value={{...settings,setLanguage:language=>setSettings(s=>({...s,language})),toggleTheme:()=>setSettings(s=>({...s,theme:s.theme==="light"?"dark":"light"})),t:key=>dictionary[settings.language][key]}}>{children}</Context.Provider>;}
+export function useSettings(){const settings=useContext(Context);if(!settings)throw new Error("Missing settings provider");return settings;}

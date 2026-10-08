@@ -1,0 +1,7 @@
+// InternMatch graph schema
+CREATE CONSTRAINT student_name IF NOT EXISTS FOR (n:Student) REQUIRE n.name IS UNIQUE;
+CREATE CONSTRAINT skill_name IF NOT EXISTS FOR (n:Skill) REQUIRE n.name IS UNIQUE;
+CREATE CONSTRAINT company_name IF NOT EXISTS FOR (n:Company) REQUIRE n.name IS UNIQUE;
+CREATE CONSTRAINT domain_name IF NOT EXISTS FOR (n:Domain) REQUIRE n.name IS UNIQUE;
+CREATE CONSTRAINT internship_id IF NOT EXISTS FOR (n:Internship) REQUIRE n.id IS UNIQUE;
+CREATE CONSTRAINT interest_name IF NOT EXISTS FOR (n:Interest) REQUIRE n.name IS UNIQUE;

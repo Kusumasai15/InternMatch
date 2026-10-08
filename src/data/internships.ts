@@ -1,0 +1,1066 @@
+import type { Internship } from "../types";
+const originalInternships: Internship[] = [
+  {
+    id: "razorpay-swe", role: "Software Engineer Intern", company: "Razorpay", sector: "Fintech", logo: "R", logoTone: "rose",
+    location: "Bengaluru", workMode: "Hybrid", stipend: 40000, duration: "6 months", closing: "Oct 22, 2026", minCgpa: 7.5,
+    branches: ["Computer Science & Engineering", "Information Technology", "Artificial Intelligence & Data Science"],
+    requiredSkills: ["React", "TypeScript", "Node.js", "SQL"], interests: ["Developer tools", "Fintech", "Product design"], openings: 4, applicants: 186,
+    summary: "Help build secure, reliable payment experiences used by millions of businesses across India.",
+  },
+  {
+    id: "postman-frontend", role: "Frontend Engineering Intern", company: "Postman", sector: "Developer tools", logo: "P", logoTone: "orange",
+    location: "Remote", workMode: "Remote", stipend: 35000, duration: "4 months", closing: "Oct 25, 2026", minCgpa: 7.0,
+    branches: ["Computer Science & Engineering", "Information Technology", "Electronics & Communication"],
+    requiredSkills: ["React", "TypeScript", "JavaScript", "CSS"], interests: ["Developer tools", "Open source"], openings: 3, applicants: 142,
+    summary: "Shape thoughtful, fast interfaces that help developers everywhere build with APIs.",
+  },
+  {
+    id: "sarvam-ml", role: "Applied AI Intern", company: "Sarvam AI", sector: "Artificial Intelligence", logo: "S", logoTone: "violet",
+    location: "Bengaluru", workMode: "On-site", stipend: 45000, duration: "6 months", closing: "Oct 30, 2026", minCgpa: 8.0,
+    branches: ["Computer Science & Engineering", "Artificial Intelligence & Data Science", "Information Technology"],
+    requiredSkills: ["Python", "Machine Learning", "NLP", "SQL"], interests: ["Artificial intelligence", "Data for good", "Indian languages"], openings: 2, applicants: 95,
+    summary: "Prototype language-first AI tools that make high-quality models work for everyone.",
+  },
+  {
+    id: "groww-analytics", role: "Product Data Intern", company: "Groww", sector: "Fintech", logo: "G", logoTone: "green",
+    location: "Bengaluru", workMode: "Hybrid", stipend: 30000, duration: "5 months", closing: "Nov 02, 2026", minCgpa: 7.0,
+    branches: ["Computer Science & Engineering", "Information Technology", "Artificial Intelligence & Data Science", "Electronics & Communication"],
+    requiredSkills: ["SQL", "Python", "Tableau", "Statistics"], interests: ["Data for good", "Fintech", "Product design"], openings: 2, applicants: 104,
+    summary: "Turn product questions into clear analysis that helps people invest with confidence.",
+  },
+  {
+    id: "figma-design", role: "Product Design Intern", company: "Figma", sector: "Design", logo: "F", logoTone: "multi",
+    location: "Remote", workMode: "Remote", stipend: 42000, duration: "4 months", closing: "Nov 05, 2026", minCgpa: 7.0,
+    branches: ["Computer Science & Engineering", "Information Technology", "Electronics & Communication", "Mechanical Engineering"],
+    requiredSkills: ["Figma", "Product thinking", "Prototyping", "CSS"], interests: ["Product design", "Developer tools", "Accessibility"], openings: 2, applicants: 88,
+    summary: "Make collaborative design workflows more inclusive, joyful, and accessible.",
+  },
+  {
+    id: "aws-cloud", role: "Cloud Engineering Intern", company: "Amazon Web Services", sector: "Cloud computing", logo: "a", logoTone: "slate",
+    location: "Hyderabad", workMode: "On-site", stipend: 38000, duration: "6 months", closing: "Oct 28, 2026", minCgpa: 7.5,
+    branches: ["Computer Science & Engineering", "Information Technology", "Electronics & Communication", "Electrical Engineering"],
+    requiredSkills: ["Python", "Linux", "AWS", "Networking"], interests: ["Cloud computing", "Infrastructure", "Developer tools"], openings: 5, applicants: 172,
+    summary: "Automate resilient cloud infrastructure and learn how large-scale systems stay available.",
+  },
+  {
+    id: "cisco-security", role: "Security Research Intern", company: "Cisco", sector: "Cybersecurity", logo: "C", logoTone: "blue",
+    location: "Pune", workMode: "Hybrid", stipend: 32000, duration: "6 months", closing: "Nov 08, 2026", minCgpa: 8.0,
+    branches: ["Computer Science & Engineering", "Information Technology", "Electronics & Communication"],
+    requiredSkills: ["Python", "Linux", "Networking", "Cybersecurity"], interests: ["Cybersecurity", "Infrastructure", "Open source"], openings: 3, applicants: 121,
+    summary: "Investigate real security signals and turn research into safer connected systems.",
+  },
+  {
+    id: "fractal-data", role: "Data Science Intern", company: "Fractal", sector: "Data & analytics", logo: "f", logoTone: "amber",
+    location: "Mumbai", workMode: "Hybrid", stipend: 28000, duration: "3 months", closing: "Nov 12, 2026", minCgpa: 7.0,
+    branches: ["Computer Science & Engineering", "Artificial Intelligence & Data Science", "Information Technology", "Electrical Engineering"],
+    requiredSkills: ["Python", "SQL", "Machine Learning", "Statistics"], interests: ["Data for good", "Artificial intelligence", "Research"], openings: 3, applicants: 209,
+    summary: "Explore responsible machine-learning applications across teams working on real-world data.",
+  },
+];
+
+const addedInternships: Internship[] = [
+  {
+    "id": "tcs-0",
+    "role": "Software Engineering Intern",
+    "company": "TCS",
+    "sector": "IT services",
+    "logo": "T",
+    "logoTone": "green",
+    "location": "Remote",
+    "workMode": "Remote",
+    "stipend": 15000,
+    "duration": "3 months",
+    "closing": "Nov 10, 2026",
+    "minCgpa": 6,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science",
+      "Electronics & Communication"
+    ],
+    "requiredSkills": [
+      "JavaScript",
+      "React",
+      "SQL"
+    ],
+    "interests": [
+      "Developer tools",
+      "Open source"
+    ],
+    "openings": 2,
+    "applicants": 30,
+    "summary": "Demonstration opportunity: contribute to it services projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "infosys-1",
+    "role": "Data Analytics Intern",
+    "company": "Infosys",
+    "sector": "IT services",
+    "logo": "I",
+    "logoTone": "blue",
+    "location": "Mumbai",
+    "workMode": "Hybrid",
+    "stipend": 20000,
+    "duration": "4 months",
+    "closing": "Nov 11, 2026",
+    "minCgpa": 6.5,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science"
+    ],
+    "requiredSkills": [
+      "Python",
+      "SQL",
+      "Statistics"
+    ],
+    "interests": [
+      "Data for good",
+      "Research"
+    ],
+    "openings": 3,
+    "applicants": 37,
+    "summary": "Demonstration opportunity: contribute to it services projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "wipro-2",
+    "role": "Embedded Systems Intern",
+    "company": "Wipro",
+    "sector": "IT services",
+    "logo": "W",
+    "logoTone": "amber",
+    "location": "Hyderabad",
+    "workMode": "On-site",
+    "stipend": 25000,
+    "duration": "5 months",
+    "closing": "Nov 12, 2026",
+    "minCgpa": 7,
+    "branches": [
+      "Electronics & Communication",
+      "Electrical Engineering",
+      "Mechanical Engineering"
+    ],
+    "requiredSkills": [
+      "Embedded C",
+      "Python",
+      "Electronics"
+    ],
+    "interests": [
+      "IoT",
+      "Infrastructure"
+    ],
+    "openings": 4,
+    "applicants": 44,
+    "summary": "Demonstration opportunity: contribute to it services projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "zoho-3",
+    "role": "Product Design Intern",
+    "company": "Zoho",
+    "sector": "SaaS",
+    "logo": "Z",
+    "logoTone": "violet",
+    "location": "Pune",
+    "workMode": "Hybrid",
+    "stipend": 30000,
+    "duration": "6 months",
+    "closing": "Nov 13, 2026",
+    "minCgpa": 7.5,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science",
+      "Electronics & Communication"
+    ],
+    "requiredSkills": [
+      "Figma",
+      "CSS",
+      "Prototyping"
+    ],
+    "interests": [
+      "Product design",
+      "Accessibility"
+    ],
+    "openings": 5,
+    "applicants": 51,
+    "summary": "Demonstration opportunity: contribute to saas projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "freshworks-4",
+    "role": "Cloud Engineering Intern",
+    "company": "Freshworks",
+    "sector": "SaaS",
+    "logo": "F",
+    "logoTone": "green",
+    "location": "Chennai",
+    "workMode": "On-site",
+    "stipend": 35000,
+    "duration": "3 months",
+    "closing": "Nov 14, 2026",
+    "minCgpa": 8,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science"
+    ],
+    "requiredSkills": [
+      "Linux",
+      "AWS",
+      "Python"
+    ],
+    "interests": [
+      "Cloud computing",
+      "Infrastructure"
+    ],
+    "openings": 6,
+    "applicants": 58,
+    "summary": "Demonstration opportunity: contribute to saas projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "flipkart-5",
+    "role": "ML Research Intern",
+    "company": "Flipkart",
+    "sector": "E-commerce",
+    "logo": "F",
+    "logoTone": "blue",
+    "location": "New Delhi",
+    "workMode": "Hybrid",
+    "stipend": 40000,
+    "duration": "4 months",
+    "closing": "Nov 15, 2026",
+    "minCgpa": 6,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science"
+    ],
+    "requiredSkills": [
+      "Python",
+      "Machine Learning",
+      "NLP"
+    ],
+    "interests": [
+      "Artificial intelligence",
+      "Research"
+    ],
+    "openings": 2,
+    "applicants": 65,
+    "summary": "Demonstration opportunity: contribute to e-commerce projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "meesho-6",
+    "role": "Operations Analytics Intern",
+    "company": "Meesho",
+    "sector": "E-commerce",
+    "logo": "M",
+    "logoTone": "amber",
+    "location": "Ahmedabad",
+    "workMode": "On-site",
+    "stipend": 45000,
+    "duration": "5 months",
+    "closing": "Nov 16, 2026",
+    "minCgpa": 6.5,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science",
+      "Electronics & Communication"
+    ],
+    "requiredSkills": [
+      "SQL",
+      "Excel",
+      "Statistics"
+    ],
+    "interests": [
+      "Data for good",
+      "Logistics"
+    ],
+    "openings": 3,
+    "applicants": 72,
+    "summary": "Demonstration opportunity: contribute to e-commerce projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "phonepe-7",
+    "role": "Quality Engineering Intern",
+    "company": "PhonePe",
+    "sector": "Fintech",
+    "logo": "P",
+    "logoTone": "violet",
+    "location": "Remote",
+    "workMode": "Remote",
+    "stipend": 50000,
+    "duration": "6 months",
+    "closing": "Nov 17, 2026",
+    "minCgpa": 7,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science"
+    ],
+    "requiredSkills": [
+      "Java",
+      "Testing",
+      "SQL"
+    ],
+    "interests": [
+      "Developer tools",
+      "Infrastructure"
+    ],
+    "openings": 4,
+    "applicants": 79,
+    "summary": "Demonstration opportunity: contribute to fintech projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "paytm-8",
+    "role": "Software Engineering Intern",
+    "company": "Paytm",
+    "sector": "Fintech",
+    "logo": "P",
+    "logoTone": "green",
+    "location": "Jaipur",
+    "workMode": "On-site",
+    "stipend": 15000,
+    "duration": "3 months",
+    "closing": "Nov 18, 2026",
+    "minCgpa": 7.5,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science"
+    ],
+    "requiredSkills": [
+      "JavaScript",
+      "React",
+      "SQL"
+    ],
+    "interests": [
+      "Developer tools",
+      "Open source"
+    ],
+    "openings": 5,
+    "applicants": 86,
+    "summary": "Demonstration opportunity: contribute to fintech projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "zerodha-9",
+    "role": "Data Analytics Intern",
+    "company": "Zerodha",
+    "sector": "Fintech",
+    "logo": "Z",
+    "logoTone": "blue",
+    "location": "Kochi",
+    "workMode": "Hybrid",
+    "stipend": 20000,
+    "duration": "4 months",
+    "closing": "Nov 19, 2026",
+    "minCgpa": 8,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science",
+      "Electronics & Communication"
+    ],
+    "requiredSkills": [
+      "Python",
+      "SQL",
+      "Statistics"
+    ],
+    "interests": [
+      "Data for good",
+      "Research"
+    ],
+    "openings": 6,
+    "applicants": 93,
+    "summary": "Demonstration opportunity: contribute to fintech projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "ather-energy-10",
+    "role": "Embedded Systems Intern",
+    "company": "Ather Energy",
+    "sector": "Mobility",
+    "logo": "A",
+    "logoTone": "amber",
+    "location": "Coimbatore",
+    "workMode": "On-site",
+    "stipend": 25000,
+    "duration": "5 months",
+    "closing": "Nov 20, 2026",
+    "minCgpa": 6,
+    "branches": [
+      "Electronics & Communication",
+      "Electrical Engineering",
+      "Mechanical Engineering"
+    ],
+    "requiredSkills": [
+      "Embedded C",
+      "Python",
+      "Electronics"
+    ],
+    "interests": [
+      "IoT",
+      "Infrastructure"
+    ],
+    "openings": 2,
+    "applicants": 100,
+    "summary": "Demonstration opportunity: contribute to mobility projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "ola-electric-11",
+    "role": "Product Design Intern",
+    "company": "Ola Electric",
+    "sector": "Mobility",
+    "logo": "O",
+    "logoTone": "violet",
+    "location": "Chandigarh",
+    "workMode": "Hybrid",
+    "stipend": 30000,
+    "duration": "6 months",
+    "closing": "Nov 21, 2026",
+    "minCgpa": 6.5,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science"
+    ],
+    "requiredSkills": [
+      "Figma",
+      "CSS",
+      "Prototyping"
+    ],
+    "interests": [
+      "Product design",
+      "Accessibility"
+    ],
+    "openings": 3,
+    "applicants": 107,
+    "summary": "Demonstration opportunity: contribute to mobility projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "tata-motors-12",
+    "role": "Cloud Engineering Intern",
+    "company": "Tata Motors",
+    "sector": "Automotive",
+    "logo": "T",
+    "logoTone": "green",
+    "location": "Indore",
+    "workMode": "On-site",
+    "stipend": 35000,
+    "duration": "3 months",
+    "closing": "Nov 22, 2026",
+    "minCgpa": 7,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science",
+      "Electronics & Communication"
+    ],
+    "requiredSkills": [
+      "Linux",
+      "AWS",
+      "Python"
+    ],
+    "interests": [
+      "Cloud computing",
+      "Infrastructure"
+    ],
+    "openings": 4,
+    "applicants": 114,
+    "summary": "Demonstration opportunity: contribute to automotive projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "mahindra-13",
+    "role": "ML Research Intern",
+    "company": "Mahindra",
+    "sector": "Automotive",
+    "logo": "M",
+    "logoTone": "blue",
+    "location": "Lucknow",
+    "workMode": "Hybrid",
+    "stipend": 40000,
+    "duration": "4 months",
+    "closing": "Nov 23, 2026",
+    "minCgpa": 7.5,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science"
+    ],
+    "requiredSkills": [
+      "Python",
+      "Machine Learning",
+      "NLP"
+    ],
+    "interests": [
+      "Artificial intelligence",
+      "Research"
+    ],
+    "openings": 5,
+    "applicants": 121,
+    "summary": "Demonstration opportunity: contribute to automotive projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "larsen-toubro-14",
+    "role": "Operations Analytics Intern",
+    "company": "Larsen & Toubro",
+    "sector": "Engineering",
+    "logo": "L",
+    "logoTone": "amber",
+    "location": "Remote",
+    "workMode": "Remote",
+    "stipend": 45000,
+    "duration": "5 months",
+    "closing": "Nov 24, 2026",
+    "minCgpa": 8,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science"
+    ],
+    "requiredSkills": [
+      "SQL",
+      "Excel",
+      "Statistics"
+    ],
+    "interests": [
+      "Data for good",
+      "Logistics"
+    ],
+    "openings": 6,
+    "applicants": 128,
+    "summary": "Demonstration opportunity: contribute to engineering projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "bosch-india-15",
+    "role": "Quality Engineering Intern",
+    "company": "Bosch India",
+    "sector": "Engineering",
+    "logo": "B",
+    "logoTone": "violet",
+    "location": "Noida",
+    "workMode": "Hybrid",
+    "stipend": 50000,
+    "duration": "6 months",
+    "closing": "Nov 25, 2026",
+    "minCgpa": 6,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science",
+      "Electronics & Communication"
+    ],
+    "requiredSkills": [
+      "Java",
+      "Testing",
+      "SQL"
+    ],
+    "interests": [
+      "Developer tools",
+      "Infrastructure"
+    ],
+    "openings": 2,
+    "applicants": 135,
+    "summary": "Demonstration opportunity: contribute to engineering projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "siemens-india-16",
+    "role": "Software Engineering Intern",
+    "company": "Siemens India",
+    "sector": "Industrial automation",
+    "logo": "S",
+    "logoTone": "green",
+    "location": "Gurugram",
+    "workMode": "On-site",
+    "stipend": 15000,
+    "duration": "3 months",
+    "closing": "Nov 26, 2026",
+    "minCgpa": 6.5,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science"
+    ],
+    "requiredSkills": [
+      "JavaScript",
+      "React",
+      "SQL"
+    ],
+    "interests": [
+      "Developer tools",
+      "Open source"
+    ],
+    "openings": 3,
+    "applicants": 142,
+    "summary": "Demonstration opportunity: contribute to industrial automation projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "abb-india-17",
+    "role": "Data Analytics Intern",
+    "company": "ABB India",
+    "sector": "Industrial automation",
+    "logo": "A",
+    "logoTone": "blue",
+    "location": "Bengaluru",
+    "workMode": "Hybrid",
+    "stipend": 20000,
+    "duration": "4 months",
+    "closing": "Nov 27, 2026",
+    "minCgpa": 7,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science"
+    ],
+    "requiredSkills": [
+      "Python",
+      "SQL",
+      "Statistics"
+    ],
+    "interests": [
+      "Data for good",
+      "Research"
+    ],
+    "openings": 4,
+    "applicants": 149,
+    "summary": "Demonstration opportunity: contribute to industrial automation projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "reliance-jio-18",
+    "role": "Embedded Systems Intern",
+    "company": "Reliance Jio",
+    "sector": "Telecommunications",
+    "logo": "R",
+    "logoTone": "amber",
+    "location": "Mumbai",
+    "workMode": "On-site",
+    "stipend": 25000,
+    "duration": "5 months",
+    "closing": "Nov 28, 2026",
+    "minCgpa": 7.5,
+    "branches": [
+      "Electronics & Communication",
+      "Electrical Engineering",
+      "Mechanical Engineering"
+    ],
+    "requiredSkills": [
+      "Embedded C",
+      "Python",
+      "Electronics"
+    ],
+    "interests": [
+      "IoT",
+      "Infrastructure"
+    ],
+    "openings": 5,
+    "applicants": 156,
+    "summary": "Demonstration opportunity: contribute to telecommunications projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "airtel-19",
+    "role": "Product Design Intern",
+    "company": "Airtel",
+    "sector": "Telecommunications",
+    "logo": "A",
+    "logoTone": "violet",
+    "location": "Hyderabad",
+    "workMode": "Hybrid",
+    "stipend": 30000,
+    "duration": "6 months",
+    "closing": "Nov 29, 2026",
+    "minCgpa": 8,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science"
+    ],
+    "requiredSkills": [
+      "Figma",
+      "CSS",
+      "Prototyping"
+    ],
+    "interests": [
+      "Product design",
+      "Accessibility"
+    ],
+    "openings": 6,
+    "applicants": 163,
+    "summary": "Demonstration opportunity: contribute to telecommunications projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "c-dac-20",
+    "role": "Cloud Engineering Intern",
+    "company": "C-DAC",
+    "sector": "Research",
+    "logo": "C",
+    "logoTone": "green",
+    "location": "Pune",
+    "workMode": "On-site",
+    "stipend": 35000,
+    "duration": "3 months",
+    "closing": "Nov 10, 2026",
+    "minCgpa": 6,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science"
+    ],
+    "requiredSkills": [
+      "Linux",
+      "AWS",
+      "Python"
+    ],
+    "interests": [
+      "Cloud computing",
+      "Infrastructure"
+    ],
+    "openings": 2,
+    "applicants": 170,
+    "summary": "Demonstration opportunity: contribute to research projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "persistent-systems-21",
+    "role": "ML Research Intern",
+    "company": "Persistent Systems",
+    "sector": "IT services",
+    "logo": "P",
+    "logoTone": "blue",
+    "location": "Remote",
+    "workMode": "Remote",
+    "stipend": 40000,
+    "duration": "4 months",
+    "closing": "Nov 11, 2026",
+    "minCgpa": 6.5,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science",
+      "Electronics & Communication"
+    ],
+    "requiredSkills": [
+      "Python",
+      "Machine Learning",
+      "NLP"
+    ],
+    "interests": [
+      "Artificial intelligence",
+      "Research"
+    ],
+    "openings": 3,
+    "applicants": 177,
+    "summary": "Demonstration opportunity: contribute to it services projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "hcltech-22",
+    "role": "Operations Analytics Intern",
+    "company": "HCLTech",
+    "sector": "IT services",
+    "logo": "H",
+    "logoTone": "amber",
+    "location": "New Delhi",
+    "workMode": "On-site",
+    "stipend": 45000,
+    "duration": "5 months",
+    "closing": "Nov 12, 2026",
+    "minCgpa": 7,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science"
+    ],
+    "requiredSkills": [
+      "SQL",
+      "Excel",
+      "Statistics"
+    ],
+    "interests": [
+      "Data for good",
+      "Logistics"
+    ],
+    "openings": 4,
+    "applicants": 184,
+    "summary": "Demonstration opportunity: contribute to it services projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "tech-mahindra-23",
+    "role": "Quality Engineering Intern",
+    "company": "Tech Mahindra",
+    "sector": "IT services",
+    "logo": "T",
+    "logoTone": "violet",
+    "location": "Ahmedabad",
+    "workMode": "Hybrid",
+    "stipend": 50000,
+    "duration": "6 months",
+    "closing": "Nov 13, 2026",
+    "minCgpa": 7.5,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science"
+    ],
+    "requiredSkills": [
+      "Java",
+      "Testing",
+      "SQL"
+    ],
+    "interests": [
+      "Developer tools",
+      "Infrastructure"
+    ],
+    "openings": 5,
+    "applicants": 191,
+    "summary": "Demonstration opportunity: contribute to it services projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "practo-24",
+    "role": "Software Engineering Intern",
+    "company": "Practo",
+    "sector": "Healthcare",
+    "logo": "P",
+    "logoTone": "green",
+    "location": "Kolkata",
+    "workMode": "On-site",
+    "stipend": 15000,
+    "duration": "3 months",
+    "closing": "Nov 14, 2026",
+    "minCgpa": 8,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science",
+      "Electronics & Communication"
+    ],
+    "requiredSkills": [
+      "JavaScript",
+      "React",
+      "SQL"
+    ],
+    "interests": [
+      "Developer tools",
+      "Open source"
+    ],
+    "openings": 6,
+    "applicants": 198,
+    "summary": "Demonstration opportunity: contribute to healthcare projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "apollo-25",
+    "role": "Data Analytics Intern",
+    "company": "Apollo",
+    "sector": "Healthcare",
+    "logo": "A",
+    "logoTone": "blue",
+    "location": "Jaipur",
+    "workMode": "Hybrid",
+    "stipend": 20000,
+    "duration": "4 months",
+    "closing": "Nov 15, 2026",
+    "minCgpa": 6,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science"
+    ],
+    "requiredSkills": [
+      "Python",
+      "SQL",
+      "Statistics"
+    ],
+    "interests": [
+      "Data for good",
+      "Research"
+    ],
+    "openings": 2,
+    "applicants": 205,
+    "summary": "Demonstration opportunity: contribute to healthcare projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "swiggy-26",
+    "role": "Embedded Systems Intern",
+    "company": "Swiggy",
+    "sector": "Logistics",
+    "logo": "S",
+    "logoTone": "amber",
+    "location": "Kochi",
+    "workMode": "On-site",
+    "stipend": 25000,
+    "duration": "5 months",
+    "closing": "Nov 16, 2026",
+    "minCgpa": 6.5,
+    "branches": [
+      "Electronics & Communication",
+      "Electrical Engineering",
+      "Mechanical Engineering"
+    ],
+    "requiredSkills": [
+      "Embedded C",
+      "Python",
+      "Electronics"
+    ],
+    "interests": [
+      "IoT",
+      "Infrastructure"
+    ],
+    "openings": 3,
+    "applicants": 212,
+    "summary": "Demonstration opportunity: contribute to logistics projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "delhivery-27",
+    "role": "Product Design Intern",
+    "company": "Delhivery",
+    "sector": "Logistics",
+    "logo": "D",
+    "logoTone": "violet",
+    "location": "Coimbatore",
+    "workMode": "Hybrid",
+    "stipend": 30000,
+    "duration": "6 months",
+    "closing": "Nov 17, 2026",
+    "minCgpa": 7,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science",
+      "Electronics & Communication"
+    ],
+    "requiredSkills": [
+      "Figma",
+      "CSS",
+      "Prototyping"
+    ],
+    "interests": [
+      "Product design",
+      "Accessibility"
+    ],
+    "openings": 4,
+    "applicants": 219,
+    "summary": "Demonstration opportunity: contribute to logistics projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "bigbasket-28",
+    "role": "Cloud Engineering Intern",
+    "company": "BigBasket",
+    "sector": "Retail",
+    "logo": "B",
+    "logoTone": "green",
+    "location": "Remote",
+    "workMode": "Remote",
+    "stipend": 35000,
+    "duration": "3 months",
+    "closing": "Nov 18, 2026",
+    "minCgpa": 7.5,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science"
+    ],
+    "requiredSkills": [
+      "Linux",
+      "AWS",
+      "Python"
+    ],
+    "interests": [
+      "Cloud computing",
+      "Infrastructure"
+    ],
+    "openings": 5,
+    "applicants": 226,
+    "summary": "Demonstration opportunity: contribute to retail projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "nykaa-29",
+    "role": "ML Research Intern",
+    "company": "Nykaa",
+    "sector": "Retail",
+    "logo": "N",
+    "logoTone": "blue",
+    "location": "Indore",
+    "workMode": "Hybrid",
+    "stipend": 40000,
+    "duration": "4 months",
+    "closing": "Nov 19, 2026",
+    "minCgpa": 8,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science"
+    ],
+    "requiredSkills": [
+      "Python",
+      "Machine Learning",
+      "NLP"
+    ],
+    "interests": [
+      "Artificial intelligence",
+      "Research"
+    ],
+    "openings": 6,
+    "applicants": 233,
+    "summary": "Demonstration opportunity: contribute to retail projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "unacademy-30",
+    "role": "Operations Analytics Intern",
+    "company": "Unacademy",
+    "sector": "Education",
+    "logo": "U",
+    "logoTone": "amber",
+    "location": "Lucknow",
+    "workMode": "On-site",
+    "stipend": 45000,
+    "duration": "5 months",
+    "closing": "Nov 20, 2026",
+    "minCgpa": 6,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science",
+      "Electronics & Communication"
+    ],
+    "requiredSkills": [
+      "SQL",
+      "Excel",
+      "Statistics"
+    ],
+    "interests": [
+      "Data for good",
+      "Logistics"
+    ],
+    "openings": 2,
+    "applicants": 240,
+    "summary": "Demonstration opportunity: contribute to education projects with mentorship, practical delivery, and a final project presentation."
+  },
+  {
+    "id": "lead-school-31",
+    "role": "Quality Engineering Intern",
+    "company": "LEAD School",
+    "sector": "Education",
+    "logo": "L",
+    "logoTone": "violet",
+    "location": "Bhubaneswar",
+    "workMode": "Hybrid",
+    "stipend": 50000,
+    "duration": "6 months",
+    "closing": "Nov 21, 2026",
+    "minCgpa": 6.5,
+    "branches": [
+      "Computer Science & Engineering",
+      "Information Technology",
+      "Artificial Intelligence & Data Science"
+    ],
+    "requiredSkills": [
+      "Java",
+      "Testing",
+      "SQL"
+    ],
+    "interests": [
+      "Developer tools",
+      "Infrastructure"
+    ],
+    "openings": 3,
+    "applicants": 247,
+    "summary": "Demonstration opportunity: contribute to education projects with mentorship, practical delivery, and a final project presentation."
+  }
+];
+
+export const internships: Internship[] = [...originalInternships, ...addedInternships];
