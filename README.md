@@ -214,3 +214,5 @@ Further reading: [architecture](docs/ARCHITECTURE.md), [demonstration steps](DEM
 ## Deployment
 
 Serve frontend and API under the same HTTPS site, for example by proxying `/api` to FastAPI. Configure `VITE_API_URL` and `ALLOWED_ORIGINS`, set `COOKIE_SECURE=true`, and keep SQLite on a persistent writable volume. Serve the production frontend build and run FastAPI without `--reload`. Local environment files, databases, and generated caches are excluded from Git.
+
+For Vercel setup, see [deployment instructions](docs/DEPLOYMENT.md). The frontend configuration is included; a persistent FastAPI host and API proxy URL are still required.
