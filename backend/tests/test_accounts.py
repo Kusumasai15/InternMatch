@@ -1,6 +1,9 @@
 import json
 import time
 import uuid
+import os
+import psycopg
+from psycopg import sql
 import pytest
 from fastapi.testclient import TestClient
 from backend.app.main import app
@@ -14,8 +17,26 @@ INTERNSHIP = {"role": "Python Intern", "company": "Test Company", "sector": "Dat
 @pytest.fixture
 def client(tmp_path, monkeypatch):
     monkeypatch.setenv("APP_DATABASE_PATH", str(tmp_path / "platform.sqlite3"))
-    with TestClient(app) as client:
-        yield client
+    # Opt in using a disposable PostgreSQL database, never DATABASE_URL.
+    test_url = os.getenv("TEST_DATABASE_URL", "").strip()
+    if not test_url:
+        with TestClient(app) as client:
+            yield client
+        return
+    schema = "internmatch_test_" + uuid.uuid4().hex
+    original_connect = psycopg.connect
+    with original_connect(test_url, autocommit=True) as setup:
+        setup.execute(sql.SQL("CREATE SCHEMA {}").format(sql.Identifier(schema)))
+    def isolated_connect(*args, **kwargs):
+        return original_connect(*args, **kwargs, options="-c search_path=" + schema)
+    monkeypatch.setattr(psycopg, "connect", isolated_connect)
+    monkeypatch.setenv("DATABASE_URL", test_url)
+    try:
+        with TestClient(app) as client:
+            yield client
+    finally:
+        with original_connect(test_url, autocommit=True) as cleanup:
+            cleanup.execute(sql.SQL("DROP SCHEMA {} CASCADE").format(sql.Identifier(schema)))
 
 def register(client, email="student@example.com"):
     response = client.post("/api/auth/register", json={"name": "Student", "email": email, "password": PASSWORD})

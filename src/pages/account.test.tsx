@@ -10,7 +10,7 @@ beforeEach(()=>vi.stubGlobal("localStorage",{getItem:()=>null,setItem:()=>{}}));
 afterEach(()=>vi.unstubAllGlobals());
 describe("account interface",()=>{
   it("shows sign-in and student registration with no admin signup",()=>{
-    const html=renderToStaticMarkup(<AuthProvider><Login/></AuthProvider>);
+    const html=renderToStaticMarkup(<SettingsProvider><AuthProvider><Login/></AuthProvider></SettingsProvider>);
     expect(html).toContain("Student registration");expect(html).toContain('type="password"');expect(html).toContain("Admin accounts are created");expect(html).not.toContain("Admin registration");
   });
   it("shows catalog management navigation only to admins",()=>{

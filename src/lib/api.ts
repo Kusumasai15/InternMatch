@@ -1,4 +1,4 @@
-const configuredUrl = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+const configuredUrl = import.meta.env.VITE_API_URL?.trim() ?? "";
 export const API_URL = configuredUrl.endsWith("/") ? configuredUrl.slice(0, -1) : configuredUrl;
 let csrfToken = "";
 export function setCsrfToken(value: string) { csrfToken = value; }

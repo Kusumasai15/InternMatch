@@ -3,12 +3,17 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "packageManager": "pnpm@10.14.0",
+  "packageManager": "npm@11.19.0",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
-    "dev": "vite --host 0.0.0.0",
+    "dev": "vite",
+    "typecheck": "tsc --noEmit",
     "build": "tsc -b && vite build",
-    "preview": "vite preview --host 0.0.0.0",
+    "preview": "vite preview",
     "test": "vitest run",
+    "test:ui": "node scripts/verify-ocean.mjs",
     "graph:seed": "python scripts/export_neo4j_seed.py",
     "backend:test": "python -m pytest backend/tests"
   },
@@ -18,11 +23,12 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
-    "@vitejs/plugin-react": "^4.3.4",
+    "@vitejs/plugin-react": "^6.1.2",
     "typescript": "~5.6.3",
-    "vite": "^5.4.11",
-    "vitest": "^2.1.9"
+    "vite": "^8.3.4",
+    "vitest": "^5.0.3"
   }
 }

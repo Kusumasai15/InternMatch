@@ -9,10 +9,10 @@ type Kind = "student" | "skill" | "interest" | "company" | "domain" | "internshi
 type GraphNode = { id: string; label: string; kind: Kind; x: number; y: number; note: string; openingId?: string };
 
 const kindMeta: Record<Kind, { color: string; caption: string }> = {
-  student: { color: "#214e3c", caption: "Student" }, skill: { color: "#83c9a4", caption: "Skill" },
-  interest: { color: "#b0a3d6", caption: "Interest" }, company: { color: "#dfb079", caption: "Company" },
-  domain: { color: "#c69bc4", caption: "Domain" },
-  internship: { color: "#83b2c5", caption: "Opportunity" },
+  student: { color: "var(--graph-student)", caption: "Student" }, skill: { color: "var(--graph-skill)", caption: "Skill" },
+  interest: { color: "var(--graph-interest)", caption: "Interest" }, company: { color: "var(--graph-company)", caption: "Company" },
+  domain: { color: "var(--graph-domain)", caption: "Domain" },
+  internship: { color: "var(--graph-internship)", caption: "Opportunity" },
 };
 
 export default function GraphCanvas({ profile, internships }: { profile: Profile; internships: Internship[] }) {

@@ -1,4 +1,4 @@
-/* Shared presentation system for every workspace page. */
+/* Shared layout and typography; color and motion tokens live in midnight-ocean.css. */
 :root {
   font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Arial, sans-serif;
   font-size: 14px;
@@ -6,46 +6,6 @@
   --font: "Segoe UI", -apple-system, BlinkMacSystemFont, Arial, sans-serif;
   --serif: var(--font);
   --mono: var(--font);
-  --ink: #172e28;
-  --text: #243c35;
-  --muted: #63736e;
-  --line: #dfe7e3;
-  --paper: #ffffff;
-  --canvas: #f4f7f6;
-  --soft: #f0f5f2;
-  --accent: #83c9a4;
-  --green: #237252;
-  --accent-soft: #e7f3ec;
-  --accent-text: #216448;
-  --primary: #226b50;
-  --primary-text: #ffffff;
-  --danger: #a43b3b;
-  --danger-soft: #fff0ef;
-  --shadow: 0 2px 6px rgba(21, 46, 37, .035);
-  --shadow-hover: 0 8px 24px rgba(21, 46, 37, .075);
-  color-scheme: light;
-  background: var(--canvas);
-  color: var(--text);
-}
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --ink: #edf4f0;
-  --text: #dce7e1;
-  --muted: #a4b7ae;
-  --line: #31463d;
-  --paper: #1b2b24;
-  --canvas: #14211b;
-  --soft: #22362c;
-  --accent: #83c9a4;
-  --green: #95d6b2;
-  --accent-soft: #263f31;
-  --accent-text: #a8dfbe;
-  --primary: #95d6b2;
-  --primary-text: #152b20;
-  --danger: #f5b1aa;
-  --danger-soft: #402b29;
-  --shadow: 0 2px 6px rgba(0, 0, 0, .1);
-  --shadow-hover: 0 8px 24px rgba(0, 0, 0, .16);
 }
 body, .main-area { background: var(--canvas); color: var(--text); }
 button, input, select, textarea { font: inherit; }

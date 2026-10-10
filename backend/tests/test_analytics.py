@@ -9,4 +9,6 @@ def test_graph_analytics_returns_metrics():
     result = analytics(payload)
     assert result.nodeCounts["domain"] == 1
     assert result.recommendations[0].jaccard > 0
+    assert result.recommendations[0].shortestPath == 2
+    assert result.recommendations[0].proximity == 0.5
     assert result.paths

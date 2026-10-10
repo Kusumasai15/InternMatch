@@ -11,6 +11,8 @@ import { rankInternships } from "./lib/matching";
 import { emptyProfile, parseProfile, readSaved, writeSaved } from "./lib/storage";
 import { pageFor } from "./lib/routes";
 import Logo from "./components/Logo";
+import ThemeToggle from "./components/ThemeToggle";
+import LoadingSkeleton from "./components/LoadingSkeleton";
 import Sidebar from "./components/Sidebar";
 
 const ManageInternships = lazy(() => import("./pages/ManageInternships"));
@@ -24,7 +26,7 @@ const GraphPage = lazy(() => import("./pages/Graph"));
 function Workspace() {
   const {internships, error: catalogError, loading: catalogLoading, refresh: refreshCatalog} = useCatalog();
   const {user, logout, updateProfile} = useAuth();
-  const {theme, toggleTheme, t} = useSettings();
+  const {t} = useSettings();
   const [pathname, setPathname] = useState(() => window.location.pathname);
   const [queryString, setQueryString] = useState(() => window.location.search);
   const enteredProfile = useMemo(() => user?.profile ?? {...emptyProfile, name: user?.name ?? ""}, [user]);
@@ -80,14 +82,14 @@ function Workspace() {
     <div className="app-shell" onClick={pageClick}><a className="skip-link" href="#main-content">{t("skip")}</a>
       {mobileNav && <button className="mobile-scrim" aria-label={t("close")} onClick={() => setMobileNav(false)}/>}
       <Sidebar mobileNav={mobileNav} pathname={pathname} route={route} ranked={ranked} profile={profile} navigate={navigate} setToast={setToast} role={user?.role}/>
-      <div className="main-area"><header className="topbar"><button className="mobile-menu" aria-label={t("menu")} aria-expanded={mobileNav} onClick={() => setMobileNav(true)}><Menu size={19}/></button><div className="topbar-crumb"><span>InternMatch</span><ChevronRight size={13}/><strong>{activeTitle}</strong></div><div className="topbar-right"><button className="theme-toggle" aria-label={theme==="light"?t("dark"):t("light")} aria-pressed={theme==="dark"} onClick={toggleTheme}>{theme==="light"?"☾":"☀"}</button><form className="global-search" onSubmit={onSearch}><Search size={15}/><input aria-label={t("search")} value={searchText} onChange={(e) => setSearchText(e.target.value)} placeholder={t("placeholder")}/></form><span className="topbar-divider"/><button className="topbar-icon" aria-label="Notifications" onClick={() => setToast("You're all caught up — new recommendations appear as your profile changes.")}><span className="notification-dot"/><Activity size={17}/></button><button className="outline-button logout-button" aria-label="Sign out" onClick={() => void onLogout()}><LogOut size={15}/><span>Sign out</span></button><span className="top-avatar">{(profile.name || "Student").split(" ").map((n) => n[0]).slice(0,2).join("")}</span></div></header>
-        <main id="main-content" tabIndex={-1} className={`content-frame content-frame--${route}`} key={route + (route === "detail" ? detailId : "")}><div className="page-content">{user?.role === "student" && !hasProfile && route !== "profile" && <div className="graph-callout" role="status"><span>Complete and save your student profile for personalized matches and NetworkX analytics.</span><button className="outline-button" onClick={() => navigate("/profile")}>Complete profile</button></div>}{catalogError && <div role="alert" className="form-errors">{catalogError} <button className="text-action" onClick={() => void refreshCatalog()}>Retry</button></div>}<ErrorBoundary key={pathname} message={t("error")} retry={t("retry")}><Suspense fallback={<div className="empty-state panel" role="status" aria-live="polite">{t("loading")}</div>}>{catalogLoading ? <div className="empty-state panel" role="status">Loading internships…</div> : view}</Suspense></ErrorBoundary></div><footer className="app-footer"><span><Logo compact/> <span>InternMatch – Student–Internship Recommendation System</span></span><span>InternMatch <i/> Built for the next step.</span></footer></main>
+      <div className="main-area"><header className="topbar"><button className="mobile-menu" aria-label={t("menu")} aria-expanded={mobileNav} onClick={() => setMobileNav(true)}><Menu size={19}/></button><div className="topbar-crumb"><span>InternMatch</span><ChevronRight size={13}/><strong>{activeTitle}</strong></div><div className="topbar-right"><ThemeToggle/><form className="global-search" onSubmit={onSearch}><Search size={15}/><input aria-label={t("search")} value={searchText} onChange={(e) => setSearchText(e.target.value)} placeholder={t("placeholder")}/></form><span className="topbar-divider"/><button className="topbar-icon" aria-label="Notifications" onClick={() => setToast("You're all caught up — new recommendations appear as your profile changes.")}><span className="notification-dot"/><Activity size={17}/></button><button className="outline-button logout-button" aria-label="Sign out" onClick={() => void onLogout()}><LogOut size={15}/><span>Sign out</span></button><span className="top-avatar">{(profile.name || "Student").split(" ").map((n) => n[0]).slice(0,2).join("")}</span></div></header>
+        <main id="main-content" tabIndex={-1} className={`content-frame content-frame--${route}`} key={route + (route === "detail" ? detailId : "")}><div className="page-content">{user?.role === "student" && !hasProfile && route !== "profile" && <div className="graph-callout" role="status"><span>Complete and save your student profile for personalized matches and NetworkX analytics.</span><button className="outline-button" onClick={() => navigate("/profile")}>Complete profile</button></div>}{catalogError && <div role="alert" className="form-errors">{catalogError} <button className="text-action" onClick={() => void refreshCatalog()}>Retry</button></div>}<ErrorBoundary key={pathname} message={t("error")} retry={t("retry")}><Suspense fallback={<LoadingSkeleton label={t("loading")}/>}>{catalogLoading ? <LoadingSkeleton label="Loading internships..."/> : view}</Suspense></ErrorBoundary></div><footer className="app-footer"><span><Logo compact/> <span>InternMatch – Student–Internship Recommendation System</span></span><span>InternMatch <i/> Built for the next step.</span></footer></main>
       </div>
       {toast && <div role="status" className="toast"><span><Check size={15}/></span>{toast}<button aria-label="Dismiss notification" onClick={() => setToast("")}><X size={14}/></button></div>}
     </div>
   );
 }
 
-function SessionWorkspace(){const {user,loading}=useAuth();if(loading)return <main className="empty-state panel" role="status">Connecting to your workspace…</main>;if(!user)return <Login/>;return <CatalogProvider key={user.id}><Workspace key={user.id}/></CatalogProvider>;}
+function SessionWorkspace(){const {user,loading}=useAuth();if(loading)return <main className="startup-loading"><LoadingSkeleton label="Connecting to your workspace..."/></main>;if(!user)return <Login/>;return <CatalogProvider key={user.id}><Workspace key={user.id}/></CatalogProvider>;}
 
 export default function App(){return <SettingsProvider><AuthProvider><SessionWorkspace/></AuthProvider></SettingsProvider>;}

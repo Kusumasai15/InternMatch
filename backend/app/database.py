@@ -1,5 +1,5 @@
 # Shared storage: SQLite holds accounts and internships; demo data is seeded only once.
-"""SQLite storage for accounts, sessions, and the shared internship catalog."""
+"""SQLite locally; durable PostgreSQL storage for hosted deployments."""
 import json
 import os
 import sqlite3
@@ -8,6 +8,7 @@ from psycopg.rows import dict_row
 from contextlib import contextmanager
 from pathlib import Path
 from dotenv import load_dotenv
+from .config import production
 
 ROOT = Path(__file__).resolve().parents[1]
 load_dotenv(ROOT / ".env")
@@ -39,11 +40,12 @@ def connection():
     if url:
         if not url.startswith(("postgres://", "postgresql://")):
             raise ValueError("DATABASE_URL must be a PostgreSQL connection URL")
-        with psycopg.connect(url, row_factory=dict_row, connect_timeout=10) as db:
+        # Transaction poolers may switch underlying sessions between requests.
+        with psycopg.connect(url, row_factory=dict_row, connect_timeout=10, prepare_threshold=None) as db:
             yield PostgresConnection(db)
         return
-    if os.getenv("VERCEL"):
-        raise RuntimeError("Set DATABASE_URL before deploying to Vercel")
+    if production():
+        raise RuntimeError("Set DATABASE_URL before deploying; production cannot use SQLite")
     target = database_path()
     target.parent.mkdir(parents=True, exist_ok=True)
     db = sqlite3.connect(target, timeout=15)
@@ -60,7 +62,7 @@ def connection():
 
 def initialize():
     with connection() as db:
-        if os.getenv("DATABASE_URL"):
+        if os.getenv("DATABASE_URL", "").strip():
             db.execute("SELECT pg_advisory_xact_lock(25034)")
         db.executescript("""
         CREATE TABLE IF NOT EXISTS users (

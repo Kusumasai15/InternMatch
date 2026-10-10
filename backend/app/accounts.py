@@ -11,6 +11,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Header, HTTPException, Request, Response
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, field_validator
 from .database import connection, INTEGRITY_ERRORS
+from .config import secure_cookie
 from .models import Profile
 
 router = APIRouter(prefix="/api")
@@ -97,7 +98,7 @@ def create_session(user, response, request):
         if old:
             db.execute("DELETE FROM sessions WHERE token_hash=?", (token_hash(old),))
         db.execute("INSERT INTO sessions VALUES (?,?,?,?)", (token_hash(token), user["id"], csrf, now + SESSION_SECONDS))
-    response.set_cookie(COOKIE, token, httponly=True, secure=os.getenv("COOKIE_SECURE", "false").lower() == "true", samesite="lax", max_age=SESSION_SECONDS, path="/")
+    response.set_cookie(COOKIE, token, httponly=True, secure=secure_cookie(), samesite="lax", max_age=SESSION_SECONDS, path="/")
     response.headers["Cache-Control"] = "no-store"
     return {"user": public_user(user), "csrfToken": csrf}
 
@@ -151,7 +152,8 @@ def update_admin_account(payload: AdminAccountUpdate, request: Request, response
     try:
         with connection() as db:
             db.execute("BEGIN IMMEDIATE")
-            user = db.execute("SELECT * FROM users WHERE id=?", (session["id"],)).fetchone()
+            lock = " FOR UPDATE" if os.getenv("DATABASE_URL", "").strip() else ""
+            user = db.execute("SELECT * FROM users WHERE id=?" + lock, (session["id"],)).fetchone()
             if not password_matches(payload.currentPassword, user["password_hash"]):
                 raise HTTPException(400, "Current password is incorrect")
             encoded = password_hash(payload.password) if payload.password else user["password_hash"]

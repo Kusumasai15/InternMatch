@@ -8,19 +8,24 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from .models import AnalyticsRequest, AnalyticsResponse
 from .analytics import analytics
-from .database import initialize
+from .database import initialize, connection
+from .config import allowed_origins, validate_production, production
 from .accounts import router as accounts_router
 from .catalog import router as catalog_router
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env")
-ALLOWED_ORIGINS = [origin.strip() for origin in os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000,http://localhost:5173,http://127.0.0.1:5173").split(",") if origin.strip()]
+ALLOWED_ORIGINS = allowed_origins()
 
 @asynccontextmanager
 async def lifespan(app):
+    validate_production()
     initialize()
     yield
 
-app = FastAPI(title="InternMatch API", version="2.0.0", description="Accounts, internship management, and NetworkX analytics.", lifespan=lifespan)
+app = FastAPI(title="InternMatch API", version="2.0.0", description="Accounts, internship management, and NetworkX analytics.", lifespan=lifespan,
+              docs_url="/api/docs" if production() else "/docs",
+              redoc_url=None if production() else "/redoc",
+              openapi_url="/api/openapi.json" if production() else "/openapi.json")
 app.add_middleware(CORSMiddleware, allow_origins=ALLOWED_ORIGINS, allow_credentials=True, allow_methods=["GET", "POST", "PUT", "DELETE"], allow_headers=["Content-Type", "X-CSRF-Token"])
 
 @app.middleware("http")
@@ -39,6 +44,13 @@ app.include_router(catalog_router)
 
 @app.get("/api/health")
 def health():
+    try:
+        with connection() as db:
+            if not db.execute("SELECT 1 FROM metadata WHERE key='catalog_seeded'").fetchone():
+                raise RuntimeError("Database initialization incomplete")
+    except Exception:
+        # Never return a connection string or driver error to the browser.
+        return JSONResponse(status_code=503, content={"status": "unavailable", "service": "internship-platform"})
     return {"status": "ok", "service": "internship-platform", "engine": "NetworkX"}
 
 @app.post("/api/analytics", response_model=AnalyticsResponse)

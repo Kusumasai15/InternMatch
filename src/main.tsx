@@ -2,6 +2,9 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import "./styles.css";
 import "./professional.css";
+import "./midnight-ocean.css";
+import { applyTheme, readPreferences } from "./lib/theme";
+import LoadingSkeleton from "./components/LoadingSkeleton";
 
 // Load App inside the boundary so a module-initialization error is recoverable.
 const App = React.lazy(() => import("./App"));
@@ -73,10 +76,11 @@ class StartupBoundary extends React.Component<
 }
 
 prepareStartupStorage();
+applyTheme(readPreferences().theme);
 const root = document.getElementById("root");
 if (!root) throw new Error("Missing application root element");
 createRoot(root).render(<React.StrictMode><StartupBoundary>
-  <React.Suspense fallback={<main className="empty-state panel" role="status">Loading InternMatch…</main>}>
+  <React.Suspense fallback={<main className="startup-loading"><LoadingSkeleton label="Loading InternMatch…"/></main>}>
     <App/>
   </React.Suspense>
 </StartupBoundary></React.StrictMode>);

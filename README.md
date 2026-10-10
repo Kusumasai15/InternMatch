@@ -6,6 +6,21 @@ InternMatch helps students find internships based on their skills, interests, an
 
 Read the [student guide](docs/STUDENT_GUIDE.md) for a simple explanation, file map, and recommended reading order.
 
+## Midnight Ocean interface
+
+Midnight Ocean is the default theme for new visitors. Use the moon/sun button in the header or sign-in screen to switch to Ocean Light. The preference is saved in this browser and applies without a reload; an existing saved light preference is preserved. The toggle supports keyboard focus and Enter/Space.
+
+The theme tokens and motion rules live in `src/midnight-ocean.css`, layered over the existing page layouts. Entrance, card stagger, hover, focus, match-progress, and brief loading-skeleton animations respect reduced-motion preferences. Backend data and page routes are unchanged.
+
+The Chromium verification passed 68 page/theme/viewport checks and real student/admin flows against a temporary database. See [redesign verification](docs/MIDNIGHT_OCEAN.md). To repeat it while the localhost servers are running:
+
+```powershell
+npx playwright install chromium
+npm run test:ui
+```
+
+The test uses port 8001 temporarily, never changes the main database, and writes screenshots to `.local-logs/ui/`.
+
 ## Features
 
 - Student registration and sign-in; admin accounts created through backend setup.
@@ -26,13 +41,13 @@ The original 40 demo internships are included. No live internship API is used.
 | Frontend | React 18, TypeScript, Vite, Lucide icons |
 | Backend | Python, FastAPI, Pydantic |
 | Graph analytics | NetworkX |
-| Account and catalog storage | SQLite |
+| Account and catalog storage | SQLite locally; PostgreSQL in production |
 | Optional graph demonstration | Neo4j and Cypher |
 | Tests | Vitest, pytest, FastAPI TestClient |
 
 ## Setup
 
-Use Python 3.11 or 3.12, Node.js 20 or newer, and pnpm 10.14.0. Docker is required only for the optional Neo4j demonstration.
+Use Python **3.12** and Node.js **22.12 or newer** (your Node 24 is supported), with npm. Python 3.14 is incompatible with this project's pinned Pydantic build and declared Python range. Docker is required only for the optional Neo4j demonstration.
 
 **Run these commands from the project root**, which contains `package.json` and the `backend` folder. If you are inside `backend`, run `cd ..` first.
 
@@ -41,9 +56,9 @@ Use Python 3.11 or 3.12, Node.js 20 or newer, and pnpm 10.14.0. Docker is requir
 In PowerShell:
 
 ```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -r backend/requirements.txt
+py install 3.12
+py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r backend/requirements-dev.txt
 ```
 
 If you already have a virtual environment, activate it instead of creating another. For an existing environment inside `backend`, activate it from the root with:
@@ -55,7 +70,7 @@ If you already have a virtual environment, activate it instead of creating anoth
 Create the first admin:
 
 ```powershell
-python -m backend.create_admin
+.\.venv\Scripts\python.exe -m backend.create_admin
 ```
 
 The command prompts for a name, email, and password of at least 10 characters. There are no default admin credentials. Public registration creates students only; this command does not convert an existing student into an admin.
@@ -63,7 +78,7 @@ The command prompts for a name, email, and password of at least 10 characters. T
 Start FastAPI with the virtual environment active:
 
 ```powershell
-python -m uvicorn backend.app.main:app --reload --port 8000
+.\.venv\Scripts\python.exe -m uvicorn backend.app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
 - API: http://localhost:8000
@@ -75,11 +90,19 @@ python -m uvicorn backend.app.main:app --reload --port 8000
 Open a second terminal at the project root:
 
 ```powershell
-pnpm install
-pnpm dev
+npm install
+npm run dev
 ```
 
 Open **http://localhost:3000**. Keep both servers running and use `localhost` consistently for the frontend and backend.
+
+After the one-time dependency installation, start both servers from the VS Code PowerShell terminal with:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\start-local.ps1
+```
+
+The script checks Python, Node, dependencies, and available ports; starts both servers; waits for HTTP readiness; and prints the URLs. It never reinstalls packages. Keep its terminal open and press Ctrl+C to stop both servers. Logs are in `.local-logs/`. In VS Code, choose **Python: Select Interpreter** and select `.venv\Scripts\python.exe`. Activation is optional because these commands use the interpreter explicitly.
 
 FastAPI is required for sign-in and the shared catalog. Connection errors include a retry option. Local graph visualization remains available if an analytics request fails after the catalog has loaded.
 
@@ -132,7 +155,7 @@ Editing seed JSON does not update an existing database; use the admin form for c
 Optional frontend configuration belongs in root `.env.local`; see [.env.example](.env.example):
 
 ```dotenv
-VITE_API_URL=http://localhost:8000
+VITE_API_URL=
 ```
 
 Optional backend configuration belongs in `backend/.env`; see [backend/.env.example](backend/.env.example):
@@ -144,6 +167,8 @@ COOKIE_SECURE=false
 ```
 
 Use the same database path and working directory for admin setup and the server. Restart the relevant server after environment changes.
+
+An empty or absent `VITE_API_URL` uses the Vite `/api` proxy to `127.0.0.1:8000`, keeping cookies on the frontend origin. An explicit backend URL remains supported with the CORS settings above. Vite development and preview bind to loopback. No deployment is needed. SQLite initialization creates missing tables and seeds the catalog once; there is no versioned migration framework.
 
 Passwords use scrypt hashing. Sessions use an HttpOnly, SameSite=Lax cookie with an eight-hour lifetime. Account and catalog mutations require CSRF protection; catalog management also requires the admin role. Authentication attempts are rate limited.
 
@@ -172,18 +197,19 @@ Read [Neo4j instructions](neo4j/README.md) before importing the seed.
 From the project root, with the Python virtual environment active:
 
 ```powershell
-python -m pip install -r backend/requirements-dev.txt
-python -m pytest backend/tests
-pnpm test
-pnpm build
+.\.venv\Scripts\python.exe -m pip install -r backend/requirements-dev.txt
+.\.venv\Scripts\python.exe -m pytest backend/tests
+npm test
+npm run typecheck
+npm run build
 ```
 
-The latest cleanup passed **27 backend tests**, **30 frontend tests**, TypeScript checks, and the production build. Coverage includes authentication, admin account updates, permissions, persistence, isolated profiles, analytics, matching, API requests, routes, and page rendering.
+Local verification passed **29 backend tests**, **33 frontend tests**, TypeScript checking, and the production build. Coverage includes authentication, admin account updates, permissions, persistence, isolated profiles, analytics, matching, API requests, routes, and static page rendering. Static rendering does not prove interactive browser flows; see [local verification report](docs/LOCAL_VERIFICATION.md) for the exact verification scope.
 
 The build output is `dist/`. Preview it with:
 
 ```powershell
-pnpm preview
+npm run preview
 ```
 
 Open http://localhost:4173. FastAPI must remain running. If using the example above, add `http://localhost:4173` to `ALLOWED_ORIGINS` and restart FastAPI before testing the preview.
@@ -213,6 +239,6 @@ Further reading: [architecture](docs/ARCHITECTURE.md), [demonstration steps](DEM
 
 ## Deployment
 
-Serve frontend and API under the same HTTPS site, for example by proxying `/api` to FastAPI. Configure `VITE_API_URL` and `ALLOWED_ORIGINS`, set `COOKIE_SECURE=true`, and keep SQLite on a persistent writable volume. Serve the production frontend build and run FastAPI without `--reload`. Local environment files, databases, and generated caches are excluded from Git.
+The Vercel configuration builds the Vite frontend with `npm ci` and `npm run build`, serves SPA routes, and forwards `/api` to the existing FastAPI Python Function. Leave `VITE_API_URL` empty for same-origin requests. Production requires persistent PostgreSQL, exact HTTPS `ALLOWED_ORIGINS`, and secure session cookies. Local development retains SQLite and the Vite API proxy.
 
-For Vercel setup, see [deployment instructions](docs/DEPLOYMENT.md). Vercel serves both the frontend and FastAPI API; set DATABASE_URL to a hosted PostgreSQL connection string. Local development still defaults to SQLite.
+See [deployment instructions](docs/DEPLOYMENT.md) for exact GitHub/Vercel steps, Neon configuration, admin setup, costs, and live acceptance checks. GitHub Actions checks both database implementations without deploying. Configuration is prepared; PostgreSQL integration and the live Vercel build must be verified before treating the application as deployed. No hosted resources have been provisioned.

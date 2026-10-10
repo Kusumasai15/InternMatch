@@ -1,12 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "vite",
-  "buildCommand": "pnpm build",
+  "installCommand": "npm ci",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "/api/index"
+      "destination": "/api"
     },
     {
       "source": "/(.*)",
@@ -15,7 +16,9 @@
   ],
   "functions": {
     "api/index.py": {
-      "includeFiles": "{backend/app/**,data/internships.json}"
+      "includeFiles": "{backend/app/**,data/internships.json}",
+      "excludeFiles": "{.venv/**,backend/.venv/**,backend/data/**,backend/tests/**,.local-logs/**,node_modules/**,src/**,dist/**,docs/**}",
+      "maxDuration": 60
     }
   }
 }

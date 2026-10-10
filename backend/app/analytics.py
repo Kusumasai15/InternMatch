@@ -89,6 +89,7 @@ def analytics(request: AnalyticsRequest) -> AnalyticsResponse:
         top_skills.append(SkillMetric(skill=label, centrality=round(value, 4), demand=d, supply=s, gap=gap, community=community_id.get(node, 0)))
 
     recommendations = []
+    connections = g.to_undirected()
     student_node = f"student:{request.profile.name}"
     for internship in request.internships:
         iid = f"internship:{internship.id}"
@@ -98,7 +99,7 @@ def analytics(request: AnalyticsRequest) -> AnalyticsResponse:
         union = profile_skills | required
         jaccard = len(matched) / len(union) if union else 1.0
         try:
-            shortest = nx.shortest_path_length(g, student_node, iid)
+            shortest = nx.shortest_path_length(connections, student_node, iid)
             proximity = 1 / shortest
         except nx.NetworkXNoPath:
             shortest = None
@@ -119,7 +120,7 @@ def analytics(request: AnalyticsRequest) -> AnalyticsResponse:
     paths = []
     for rec in recommendations[:5]:
         try:
-            path = nx.shortest_path(g.to_undirected(), student_node, f"internship:{rec.internshipId}")
+            path = nx.shortest_path(connections, student_node, f"internship:{rec.internshipId}")
             paths.append({"internshipId": rec.internshipId, "path": [g.nodes[n].get("label", n) for n in path]})
         except nx.NetworkXNoPath:
             pass

@@ -5,6 +5,7 @@ import { fetchGraphAnalytics, type GraphAnalytics } from "../lib/graphApi";
 import { parseProfile } from "../lib/storage";
 import type { Profile } from "../types";
 import GraphCanvas from "../components/GraphCanvas";
+import LoadingSkeleton from "../components/LoadingSkeleton";
 import { SectionHeading } from "../components/Shared";
 
 const pct = (value: number) => `${Math.round(value * 100)}%`;
@@ -48,7 +49,7 @@ export default function GraphPage({ profile }: { profile: Profile }) {
     {analytics?.paths.length ? <section className="panel analytics-panel"><div className="chart-card-header"><div><span className="eyebrow">GRAPH TRAVERSAL</span><h3>Shortest recommendation paths.</h3><span className="chart-subtitle">A readable path from the student through skills to an opportunity.</span></div><Sparkles size={19} /></div><div className="path-list">{analytics.paths.slice(0, 5).map((item) => <div className="path-row" key={item.internshipId}>{item.path.map((node, i) => <span key={`${node}-${i}`}><b>{node}</b>{i < item.path.length - 1 && <em>→</em>}</span>)}</div>)}</div></section> : null}
 
     {error && <div className="graph-callout"><div><Sparkles size={16}/><strong>Local-first graph mode.</strong><span>{error}</span></div><span>{profile.skills.length} skills · {profile.interests.length} interests</span></div>}
-    {!analytics && !error && <div className="empty-state panel" role="status">Connecting to the NetworkX analytics service…</div>}
+    {!analytics && !error && <LoadingSkeleton label="Connecting to the NetworkX analytics service…"/>}
 
     <div className="graph-callout"><div><Sparkles size={16}/><strong>Your graph is personal.</strong><span>Update a skill on your profile and its edges recalculate across the network.</span></div><span>{profile.skills.length} skills · {profile.interests.length} interests · {internships.length} opportunities</span></div>
     <GraphCanvas profile={profile} internships={internships}/>
