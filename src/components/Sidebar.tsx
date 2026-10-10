@@ -1,18 +1,19 @@
 import { useSettings } from "../lib/settings";
 import type { Label } from "../i18n";
-import { Activity, BriefcaseBusiness, ChevronDown, ChevronLeft, CircleHelp, GraduationCap, Settings2, Sparkles } from "lucide-react";
+import { Activity, BriefcaseBusiness, ChevronDown, ChevronLeft, CircleHelp, GraduationCap, Settings2, Sparkles, FileUp } from "lucide-react";
 import type { AppRoute, Profile } from "../types";
 import { rankInternships } from "../lib/matching";
 import Logo from "./Logo";
 
 const primaryNav: Array<{ route: string; label: string; icon: typeof BriefcaseBusiness }> = [
   { route: "/profile", label: "My profile", icon: GraduationCap },
+  { route: "/resume", label: "AI Resume Analyzer", icon: FileUp },
   { route: "/internships", label: "Internships", icon: BriefcaseBusiness }, { route: "/recommendations", label: "For you", icon: Sparkles },
   { route: "/graph", label: "Graph view", icon: Activity },
   { route: "/applications", label: "Applications", icon: BriefcaseBusiness },
 ];
 
-export default function Sidebar({mobileNav, pathname, route, ranked, profile, navigate, setToast, role="student"}: {mobileNav: boolean; pathname: string; route: AppRoute; ranked: ReturnType<typeof rankInternships>; profile: Profile; navigate: (path:string)=>void; setToast:(message:string)=>void; role?:"student"|"admin"}) { const {t}=useSettings(); const navKey:Record<string,Label>={"/admin":"admin","/profile":"profile","/internships":"internships","/recommendations":"recommendations","/graph":"graph","/applications":"applications"}; return (      <aside className={`sidebar${mobileNav ? " sidebar--open" : ""}`}>
+export default function Sidebar({mobileNav, pathname, route, ranked, profile, navigate, setToast, role="student"}: {mobileNav: boolean; pathname: string; route: AppRoute; ranked: ReturnType<typeof rankInternships>; profile: Profile; navigate: (path:string)=>void; setToast:(message:string)=>void; role?:"student"|"admin"}) { const {t}=useSettings(); const navKey:Record<string,Label>={"/admin":"admin","/profile":"profile","/resume":"resume","/internships":"internships","/recommendations":"recommendations","/graph":"graph","/applications":"applications"}; return (      <aside className={`sidebar${mobileNav ? " sidebar--open" : ""}`}>
         <div className="sidebar-top"><Logo/><button className="sidebar-collapse" aria-label={t("close")} onClick={()=>navigate(pathname)}><ChevronLeft size={14}/></button></div>
         <div className="workspace-switcher"><span className="workspace-symbol">I</span><span><strong>InternMatch</strong><small>Project workspace</small></span><ChevronDown size={14}/></div>
         <nav className="side-nav" aria-label="Main navigation"><span className="nav-section-label">{t("workspace")}</span>{(role === "admin" ? [{route:"/admin",label:"Manage internships",icon:Settings2},{route:"/internships",label:"Internships",icon:BriefcaseBusiness}] : primaryNav).map(({ route: itemRoute, icon: Icon }) => <a aria-current={route===itemRoute.slice(1) || (itemRoute==="/internships"&&route==="detail")?"page":undefined} href={itemRoute} key={itemRoute} onClick={(e) => { e.preventDefault(); navigate(itemRoute); }} className={`nav-link${route === itemRoute.slice(1) || (itemRoute === "/internships" && (route === "detail" || route === "internships")) || (itemRoute === "/recommendations" && route === "recommendations") ? " is-active" : ""}`}><Icon size={16}/><span>{t(navKey[itemRoute])}</span>{itemRoute === "/recommendations" && <b className="nav-count">{ranked.filter((item) => item.match.eligible).length}</b>}</a>)}

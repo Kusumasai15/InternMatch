@@ -67,7 +67,10 @@ def main():
                     assert preflight.status_code == 200
                     print("Real HTTP student registration/login/logout, profile, catalog, analytics, admin CRUD, validation, CORS: PASS")
             finally:
-                server.terminate()
+                if os.name == "nt":
+                    subprocess.run(["taskkill", "/PID", str(server.pid), "/T", "/F"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                else:
+                    server.terminate()
                 server.wait(timeout=10)
 
 

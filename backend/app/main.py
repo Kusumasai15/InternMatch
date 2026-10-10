@@ -12,6 +12,7 @@ from .database import initialize, connection
 from .config import allowed_origins, validate_production, production
 from .accounts import router as accounts_router
 from .catalog import router as catalog_router
+from .resumes import router as resumes_router
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 ALLOWED_ORIGINS = allowed_origins()
@@ -41,6 +42,7 @@ async def protect_browser_requests(request: Request, call_next):
 
 app.include_router(accounts_router)
 app.include_router(catalog_router)
+app.include_router(resumes_router)
 
 @app.get("/api/health")
 def health():
@@ -56,3 +58,13 @@ def health():
 @app.post("/api/analytics", response_model=AnalyticsResponse)
 def graph_analytics(payload: AnalyticsRequest):
     return analytics(payload)
+
+@app.get("/api/readiness")
+def readiness():
+    try:
+        with connection() as db:
+            for table in ("users", "sessions", "auth_attempts", "internships", "resume_results", "resume_uploads"):
+                db.execute(f"SELECT 1 FROM {table} LIMIT 0")
+    except Exception:
+        return JSONResponse(status_code=503, content={"status": "unavailable"})
+    return health()

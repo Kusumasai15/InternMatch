@@ -81,13 +81,17 @@ def limit_auth(request, email):
     # Limit by address as well as email to prevent cycling through accounts.
     keys = [token_hash("ip:" + address), token_hash("email:" + email)]
     with connection() as db:
+        db.execute("BEGIN IMMEDIATE")
+        if os.getenv("DATABASE_URL", "").strip():
+            for key in sorted(keys):
+                db.execute("SELECT pg_advisory_xact_lock(?)", (int(key[:16], 16) - 2**63,))
         db.execute("DELETE FROM auth_attempts WHERE started_at<?", (now - 900,))
         for key in keys:
             row = db.execute("SELECT attempts FROM auth_attempts WHERE key=?", (key,)).fetchone()
             if row and row["attempts"] >= 20:
                 raise HTTPException(429, "Too many sign-in attempts. Try again in 15 minutes.")
         for key in keys:
-            db.execute("INSERT INTO auth_attempts VALUES (?,1,?) ON CONFLICT(key) DO UPDATE SET attempts=attempts+1", (key, now))
+            db.execute("INSERT INTO auth_attempts VALUES (?,1,?) ON CONFLICT(key) DO UPDATE SET attempts=auth_attempts.attempts+1", (key, now))
 
 def create_session(user, response, request):
     token, csrf = secrets.token_urlsafe(32), secrets.token_urlsafe(32)
@@ -138,6 +142,17 @@ def logout(response: Response, session=Depends(mutation_session)):
 @router.put("/profile")
 def update_profile(payload: Profile, session=Depends(mutation_session)):
     with connection() as db:
+        # A first profile save can include already-reviewed resume skills.
+        result = db.execute("SELECT details FROM resume_results WHERE user_id=?", (session["id"],)).fetchone()
+        if result:
+            analysis = json.loads(result["details"])
+            skills = {value.lower(): value for value in payload.skills}
+            introduced = [value for value in analysis["skills"] if value.lower() not in skills]
+            if len(skills) + len(introduced) > 100:
+                raise HTTPException(422, "Keep your combined profile skills within 100 entries")
+            payload.skills = list(skills.values()) + introduced
+            analysis["appliedSkills"] = list(dict.fromkeys((analysis["skills"] if not session["profile"] else analysis.get("appliedSkills", [])) + introduced))
+            db.execute("UPDATE resume_results SET details=? WHERE user_id=?", (json.dumps(analysis), session["id"]))
         db.execute("UPDATE users SET profile=? WHERE id=?", (payload.model_dump_json(), session["id"]))
     return payload
 

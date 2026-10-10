@@ -78,6 +78,20 @@ try {
   await page.getByRole('button', { name: 'Save profile', exact: true }).click();
   await expect(page.getByRole('status').filter({ hasText: 'Profile saved' })).toBeVisible();
   console.log('Registration and profile saved; checking both themes at five widths.');
+  const resume = spawnSync(python, ['-c', 'from docx import Document; import io,base64; d=Document(); d.add_paragraph("Skills: Python SQL Pandas Machine Learning. Projects: Predictive analytics using Pandas."); b=io.BytesIO(); d.save(b); print(base64.b64encode(b.getvalue()).decode())'], {cwd:root,env,encoding:'utf8'});
+  if(resume.status !== 0) throw new Error('Resume fixture creation failed');
+  await page.goto('http://localhost:3000/profile');
+  await page.getByLabel('Upload Resume', {exact:true}).setInputFiles({name:'resume.docx',mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',buffer:Buffer.from(resume.stdout.trim(),'base64')});
+  await expect(page.getByRole('button', {name:'Remove resume skill Pandas',exact:true})).toBeVisible();
+  await page.getByRole('button', {name:'Remove resume skill Machine Learning',exact:true}).click();
+  await page.getByRole('button', {name:'Save reviewed skills',exact:true}).click();
+  await expect(page.getByRole('button', {name:'Remove resume skill Pandas',exact:true})).toBeVisible();
+  await page.reload();
+  await expect(page.getByRole('button', {name:'Remove resume skill Machine Learning',exact:true})).toHaveCount(0);
+  await page.screenshot({path:join(screenshots,'resume-review.png'),fullPage:true});
+  await page.getByRole('button', {name:'Delete resume-derived data',exact:true}).click();
+  await expect(page.getByRole('button', {name:'Save reviewed skills',exact:true})).toHaveCount(0);
+  console.log('Resume DOCX upload, review, persistence and deletion passed.');
   const routes = ['/profile', '/internships', '/recommendations', '/graph', '/applications', '/internships/razorpay-swe'];
   for (const theme of ['dark', 'light']) {
     if ((await page.locator('html').getAttribute('data-theme')) !== theme) await page.getByRole('button', { name: `Switch to ${theme === 'dark' ? 'Midnight Ocean' : 'Ocean Light'}` }).click();
@@ -155,7 +169,8 @@ try {
   console.log(`PASS: ${checks} page/theme/viewport checks; keyboard theme toggle and persistence; student registration, profile, search/filter, saved roles, tracker persistence, mobile navigation, admin login, reduced motion; no unexpected console/runtime errors. Screenshots: ${screenshots}`);
 } finally {
   await browser?.close();
-  server.kill();
+  if(process.platform === 'win32') spawnSync('taskkill', ['/PID',String(server.pid),'/T','/F'], {stdio:'ignore',windowsHide:true});
+  else server.kill();
   await new Promise(resolve => server.exitCode !== null ? resolve() : server.once('exit', resolve));
   await rm(temporary, { recursive: true, force: true });
 }

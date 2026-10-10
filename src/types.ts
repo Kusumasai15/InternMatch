@@ -47,7 +47,7 @@ export type ScoreBreakdown = {
   weights: MatchWeights;
 };
 
-export type AppRoute = "admin" | "profile" | "internships" | "graph" | "recommendations" | "detail" | "applications";
+export type AppRoute = "admin" | "resume" | "profile" | "internships" | "graph" | "recommendations" | "detail" | "applications";
 
 export type MatchWeights = { skills: number; interests: number; location: number; academics: number };
 

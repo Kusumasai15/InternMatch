@@ -1,10 +1,13 @@
-import { useEffect, useState, type FormEvent, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+import { useAuth } from "../lib/auth";
+import { useResume } from "../lib/resume";
 import { ArrowRight, Check, ChevronDown, Code2, Compass, GraduationCap, MapPin, Sparkles, X } from "lucide-react";
 import { branches, cities } from "../data";
 import { parseProfile } from "../lib/storage";
 import type { Profile } from "../types";
 
 import { SectionHeading, SkillChips } from "../components/Shared";
+import ResumeUpload from "../components/ResumeUpload";
 function TagEditor({ label, values, onChange, suggestions, helper }: { label: string; values: string[]; onChange: (next: string[]) => void; suggestions: string[]; helper: string }) {
   const [entry, setEntry] = useState("");
   const add = (item: string) => {
@@ -26,7 +29,20 @@ export default function ProfilePage({ profile, onUpdate, onNavigate, notify }: {
   const [draft, setDraft] = useState<Profile>(profile);
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
+  const {user} = useAuth();
+  const resume = useResume();
+  const introducedSkills = useRef<string[]>([]);
   useEffect(() => setDraft(profile), [profile]);
+  useEffect(() => {
+    if (user?.profile) {introducedSkills.current = [];return;}
+    const extracted = resume?.analysis?.skills ?? [];
+    const previousIntroduced = introducedSkills.current;
+    introducedSkills.current = extracted.filter(skill => !profile.skills.some(value => value.toLowerCase() === skill.toLowerCase())).map(skill => skill.toLowerCase());
+    setDraft(previous => {
+      const baseline = previous.skills.filter(skill => !previousIntroduced.includes(skill.toLowerCase()));
+      return {...previous, skills: [...new Map([...baseline, ...extracted].map(skill => [skill.toLowerCase(), skill])).values()]};
+    });
+  }, [resume?.analysis, user?.profile, profile]);
   const update = <K extends keyof Profile>(key: K, value: Profile[K]) => setDraft((prev) => ({ ...prev, [key]: value }));
   const save = async (event: FormEvent) => {
     event.preventDefault();
@@ -49,6 +65,7 @@ export default function ProfilePage({ profile, onUpdate, onNavigate, notify }: {
   };
   const completeness = Math.min(100, Math.round((Number(!!draft.branch) + Number(Number.isFinite(draft.cgpa)) + Number(!!draft.location) + Number(draft.skills.length > 0) + Number(draft.interests.length > 0)) / 5 * 100));
   return <div className="page-stack">
+    <ResumeUpload onNavigate={onNavigate}/>
     <SectionHeading eyebrow="YOUR WORKSPACE" title="Student profile" description="Add your skills, interests, and preferences to find internships that fit you." action={<span className="profile-status"><i/> Saved to your student account</span>}/>
     <div className="profile-layout"><form className="profile-form panel" onSubmit={save}>
       <div className="panel-title"><div><span className="eyebrow">01 — THE BASICS</span><h3>Tell us about yourself</h3><p>Just enough to make eligibility and location meaningful.</p></div><span className="form-index">01</span></div>

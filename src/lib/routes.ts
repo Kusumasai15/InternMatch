@@ -3,6 +3,7 @@ import type { AppRoute } from "../types";
 export function pageFor(path: string, hasProfile: boolean, role: "student" | "admin" = "student"): AppRoute {
   if (path === "/admin") return role === "admin" ? "admin" : "internships";
   if (path.startsWith("/internships/")) return "detail";
+  if (path === "/resume") return role === "student" ? "resume" : "admin";
   if (path === "/profile") return "profile";
   if (path === "/internships") return "internships";
   if (path === "/graph") return "graph";

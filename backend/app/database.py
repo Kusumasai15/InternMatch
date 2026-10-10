@@ -3,6 +3,7 @@
 import json
 import os
 import sqlite3
+import time
 import psycopg
 from psycopg.rows import dict_row
 from contextlib import contextmanager
@@ -80,7 +81,17 @@ def initialize():
         );
         CREATE TABLE IF NOT EXISTS metadata (key TEXT PRIMARY KEY, value TEXT NOT NULL);
         CREATE TABLE IF NOT EXISTS auth_attempts (key TEXT PRIMARY KEY, attempts INTEGER NOT NULL, started_at INTEGER NOT NULL);
+        CREATE TABLE IF NOT EXISTS resume_results (
+            user_id TEXT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+            details TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS resume_uploads (
+            user_id TEXT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+            upload_id TEXT NOT NULL, extension TEXT NOT NULL, chunks TEXT NOT NULL,
+            size INTEGER NOT NULL, expires_at INTEGER NOT NULL
+        );
         """)
+        db.execute("DELETE FROM resume_uploads WHERE expires_at<?", (int(time.time()),))
         if not db.execute("SELECT 1 FROM metadata WHERE key='catalog_seeded'").fetchone():
             for item in json.loads((ROOT.parent / "data" / "internships.json").read_text(encoding="utf-8")):
                 db.execute("INSERT INTO internships VALUES (?, ?, 0) ON CONFLICT(id) DO NOTHING", (item["id"], json.dumps(item)))

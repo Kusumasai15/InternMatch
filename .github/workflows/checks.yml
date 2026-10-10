@@ -44,4 +44,4 @@ jobs:
       - name: PostgreSQL account and catalog integration tests
         env:
           TEST_DATABASE_URL: postgresql://internmatch_test:${{ github.run_id }}-${{ github.run_attempt }}-test@127.0.0.1:5432/internmatch_test
-        run: python -m pytest backend/tests/test_accounts.py -q
+        run: python -m pytest backend/tests/test_accounts.py backend/tests/test_resumes.py -q

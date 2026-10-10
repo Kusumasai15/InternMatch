@@ -258,3 +258,31 @@ input:user-invalid, select:user-invalid, textarea:user-invalid { border-color: v
   :root, :root[data-theme] { --canvas: white; --paper: white; --text: #111; --ink: #111; --muted: #444; --line: #DDD; --hero: white; --hero-text: #111; --hero-muted: #444; }
   .auth-theme-control, .theme-toggle { display: none; }
 }
+.resume-panel { padding: var(--space-6, 24px); }
+.content-frame--recommendations .resume-panel { border-color: var(--ocean); background: var(--hero); box-shadow: var(--shadow-hover); }
+.resume-panel h3 { overflow-wrap: anywhere; }
+.resume-profile-note { margin-top: 16px; padding: 16px; background: var(--soft); border: 1px solid var(--line); border-radius: var(--radius-sm); }
+.resume-profile-note p { margin: 0 0 12px; line-height: 1.7; color: var(--muted); }
+.resume-profile-note a { color: var(--accent-text); text-decoration: underline; text-underline-offset: 3px; }
+.resume-upload-button { transition: box-shadow var(--motion-fast) var(--ease); }
+.resume-upload-button.is-busy { opacity: .7; cursor: wait; }
+.resume-upload-button.is-busy input { cursor: wait; }
+@media (max-width: 600px) {
+  .resume-panel { padding: 20px; }
+  .resume-panel h3 { align-items: flex-start; font-size: 20px; }
+  .resume-panel h3 svg { flex-shrink: 0; margin-top: 3px; }
+  .resume-upload-button, .resume-actions > button, .resume-edit-row > button { width: 100%; justify-content: center; }
+  .resume-edit-row { flex-direction: column; }
+}
+.resume-panel h3 { display:flex; align-items:center; gap:10px; }
+.resume-upload-button { position:relative; cursor:pointer; overflow:hidden; }
+.resume-upload-button input { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; }
+.resume-upload-button:focus-within { outline:2px solid var(--cyan, #38BDF8); outline-offset:4px; }
+.resume-panel .field-helper { display:block; margin-top:12px; line-height:1.7; }
+.resume-results { margin-top:22px; border-top:1px solid var(--line); padding-top:18px; }
+.resume-results p { line-height:1.7; color:var(--muted); }
+.resume-edit-row,.resume-actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:16px; }
+.resume-edit-row input { flex:1; min-width:0; }
+.resume-progress { height:8px; background:var(--line); border-radius:8px; overflow:hidden; margin-top:16px; }
+.resume-progress span { display:block; height:100%; background:var(--cyan, #38BDF8); transition:width 200ms ease; }
+@media (prefers-reduced-motion:reduce) { .resume-progress span { transition:none; } }
