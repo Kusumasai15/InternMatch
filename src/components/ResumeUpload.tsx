@@ -1,4 +1,4 @@
-import { Upload, FileCheck, Trash2, X } from "lucide-react";
+import { Upload, FileCheck, Trash2, X, ShieldCheck, ArrowRight, UserRound } from "lucide-react";
 import { useAuth } from "../lib/auth";
 import { useResume } from "../lib/resume";
 
@@ -8,11 +8,14 @@ export default function ResumeUpload({onExtract, onNavigate}: {onExtract?: (skil
   if(user?.role !== "student" || !resume) return null;
   const {analysis, skills, setSkills, entry, setEntry, busy, loading, progress, message, error, upload, save, remove, add} = resume;
   return <section className="panel resume-panel" aria-labelledby="resume-heading" aria-busy={busy || loading}>
-    <div className="panel-title"><div><span className="eyebrow">AI RESUME ANALYZER</span><h3 id="resume-heading"><FileCheck size={20}/> AI Resume Analyzer / Upload Resume</h3><p>Upload a text-based PDF or DOCX, up to 5 MB. Review every detected skill.</p></div></div>
-    <label className={`button button-dark resume-upload-button${busy || loading ? " is-busy" : ""}`}><Upload size={16}/>{loading ? "Loading resume..." : busy ? "Processing resume..." : "Upload Resume"}<input aria-label="Upload Resume" type="file" accept=".pdf,.docx" disabled={busy || loading} onChange={event=>{const file=event.target.files?.[0];event.target.value="";if(file)void upload(file,onExtract);}}/></label>
-    {!user?.profile && <div className="resume-profile-note" role="status"><p>You can upload and review your resume now. Complete and save your student profile with your branch, CGPA, location, skills and interests to apply these skills to personalized recommendations.</p><a href="/profile" onClick={event=>{if(onNavigate && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey){event.preventDefault();onNavigate("/profile");}}}>Complete student profile</a></div>}
+    <div className="resume-intro"><div><span className="eyebrow">UPLOAD RESUME</span><h3 id="resume-heading">Turn your experience into a stronger match</h3><p>Upload your resume to find skills you can review and add to your student profile.</p></div><span className="resume-intro-icon"><FileCheck size={22}/></span></div>
+    <div className="resume-upload-area">
+      <div className="resume-upload-copy"><span className="resume-upload-icon"><Upload size={19}/></span><div><strong>Start with your resume</strong><span>Text-based PDF or DOCX · up to 5 MB</span></div></div>
+      <label className={`button button-dark resume-upload-button${busy || loading ? " is-busy" : ""}`}><Upload size={16}/>{loading ? "Loading resume..." : busy ? "Processing resume..." : "Upload Resume"}<input aria-label="Upload Resume" type="file" accept=".pdf,.docx" disabled={busy || loading} onChange={event=>{const file=event.target.files?.[0];event.target.value="";if(file)void upload(file,onExtract);}}/></label>
+    </div>
+    {!user?.profile && <div className="resume-profile-note" role="status"><span className="resume-note-icon"><UserRound size={17}/></span><div><strong>Get personalized recommendations</strong><p>You can review your resume now. To use its skills in your matches, complete and save your profile with your branch, CGPA, location, skills, and interests.</p><a href="/profile" onClick={event=>{if(onNavigate && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey){event.preventDefault();onNavigate("/profile");}}}>Complete student profile <ArrowRight size={14}/></a></div></div>}
     {loading && <p role="status">Loading saved resume analysis...</p>}
-    <p className="field-helper">Private to your student account. No external AI services. Original files are discarded after analysis; interrupted uploads expire after 10 minutes and are cleaned on API activity/startup.</p>
+    <div className="resume-privacy"><ShieldCheck size={16}/><p><strong>Private to your student account.</strong> No external AI services are used. Original files are discarded after analysis; interrupted uploads expire after 10 minutes and are cleaned on API activity or startup.</p></div>
     {busy && <div className="resume-progress" role="progressbar" aria-label="Resume upload" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}><span style={{width:`${progress}%`}}/></div>}
     {message && <p role="status">{message}</p>}{error && <p className="form-errors" role="alert">{error}</p>}
     {analysis && <div className="resume-results"><h4>Extracted skills · review and correct</h4><div className="tag-input-items">{skills.map(skill=><span className="editable-tag" key={skill}>{skill}<button type="button" disabled={busy || loading} aria-label={`Remove resume skill ${skill}`} onClick={()=>setSkills(skills.filter(value=>value!==skill))}><X size={12}/></button></span>)}</div>
