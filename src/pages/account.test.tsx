@@ -17,11 +17,11 @@ describe("account interface",()=>{
     const sidebar=(role:"student"|"admin")=>renderToStaticMarkup(<SettingsProvider><Sidebar mobileNav={false} pathname="/" route={role==="admin"?"admin":"profile"} ranked={rankInternships(defaultProfile,internships)} profile={defaultProfile} navigate={()=>{}} setToast={()=>{}} role={role}/></SettingsProvider>);
     expect(sidebar("student")).not.toContain('href="/admin"');expect(sidebar("admin")).toContain('href="/admin"');
   });
-  it("places the active resume analyzer directly below My profile for students only",()=>{
+  it("places Upload resume directly below My profile for students only",()=>{
     const sidebar=(role:"student"|"admin")=>renderToStaticMarkup(<SettingsProvider><Sidebar mobileNav={true} pathname="/resume" route={role==="student"?"resume":"admin"} ranked={[]} profile={defaultProfile} navigate={()=>{}} setToast={()=>{}} role={role}/></SettingsProvider>);
     const student=sidebar("student");
     expect(student).toMatch(/href="\/profile"[^]*?<\/a><a aria-current="page" href="\/resume"/);
-    expect(student).toContain("AI Resume Analyzer");
+    expect(student).toContain("Upload resume");
     expect(student).toContain("lucide-file-up");
     expect(student).toContain("sidebar--open");
     expect(sidebar("admin")).not.toContain('href="/resume"');

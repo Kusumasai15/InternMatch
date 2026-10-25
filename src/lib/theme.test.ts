@@ -20,8 +20,9 @@ describe("ocean theme preferences", () => {
     vi.stubGlobal("document", {documentElement:{dataset},querySelector:()=>({setAttribute})});
     applyTheme("light");
     expect(dataset.theme).toBe("light");
-    expect(setAttribute).toHaveBeenLastCalledWith("content", "#F0F7FC");
+    expect(setAttribute).toHaveBeenLastCalledWith("content", "#F7F8F6");
     applyTheme("dark");
     expect(dataset.theme).toBe("dark");
+    expect(setAttribute).toHaveBeenLastCalledWith("content", "#0D2231");
   });
 });
